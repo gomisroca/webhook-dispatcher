@@ -17,10 +17,10 @@ type Destination struct {
 }
 
 type DispatchRequest struct {
-	Payload      map[string]any `json:"payload"`
-	Destinations []Destination  `json:"destinations"`
-	Secret    string `json:"secret,omitempty"`
-	EventType string `json:"event_type,omitempty"`
+	Payload      	map[string]any 	`json:"payload"`
+	Destinations 	[]Destination  	`json:"destinations"`
+	Secret    		string 			`json:"secret,omitempty"`
+	EventType 		string 			`json:"event_type,omitempty"`
 }
 
 type AttemptStatus string
@@ -28,6 +28,7 @@ type AttemptStatus string
 const (
 	StatusSuccess AttemptStatus = "success"
 	StatusFailure AttemptStatus = "failure"
+	StatusPending AttemptStatus = "pending"
 )
 
 type DeliveryAttempt struct {

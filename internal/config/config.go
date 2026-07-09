@@ -16,7 +16,6 @@ type Config struct {
 	BackoffMax             time.Duration
 	DeliveryTimeout        time.Duration
 	RecordTTL              time.Duration
-	CleanupInterval        time.Duration
 }
 
 func Load() Config {
@@ -28,7 +27,6 @@ func Load() Config {
 		BackoffMax:      time.Duration(getEnvFloat("BACKOFF_MAX_SECONDS", 60)) * time.Second,
 		DeliveryTimeout: time.Duration(getEnvFloat("DELIVERY_TIMEOUT_SECONDS", 10)) * time.Second,
 		RecordTTL:       time.Duration(getEnvFloat("RECORD_TTL_SECONDS", 86400)) * time.Second,
-		CleanupInterval: time.Duration(getEnvFloat("CLEANUP_INTERVAL_SECONDS", 300)) * time.Second,
 	}
 }
 
