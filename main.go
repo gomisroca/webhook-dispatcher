@@ -6,6 +6,8 @@ import (
 	"time"
 	"webhook-dispatcher/internal/config"
 	"webhook-dispatcher/internal/handlers"
+	"webhook-dispatcher/internal/middleware"
+	"webhook-dispatcher/internal/store"
 )
 
 func main() {
@@ -16,8 +18,17 @@ func main() {
 	}
 	log.Printf("Starting webhook dispatcher on :%s (max_attempts=%d, backoff=%s base)", cfg.Port, cfg.MaxAttempts, cfg.BackoffBase)
 
+	s := store.New(cfg.RecordTTL)
+	client := &http.Client{}
+	
+	dispatchHandler := &handlers.DispatchHandler{Store: s, Client: client, Cfg: cfg}
+	eventsHandler := &handlers.EventsHandler{Store: s}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", handlers.Health)
+	mux.Handle("POST /dispatch", middleware.RequireAPIKey(cfg.APIKey, dispatchHandler))
+	mux.Handle("GET /events", middleware.RequireAPIKey(cfg.APIKey, eventsHandler))
+	mux.Handle("GET /events/{id}", middleware.RequireAPIKey(cfg.APIKey, eventsHandler))
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
